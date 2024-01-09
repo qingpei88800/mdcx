@@ -12,7 +12,7 @@ APP = ['main.py']
 DATA_FILES = ['resources/c_number', 'resources/mapping_table', 'resources/zhconv', 'resources/fonts', 'resources/Img']
 OPTIONS = {
     'argv_emulation': False,
-    'iconfile': 'Img/MDCx.icns',
+    'iconfile': 'resources/Img/MDCx.icns',
     'plist': {
         'CFBundleName': "MDCx",  # app名字
         'CFBundleDisplayName': "MDCx",
