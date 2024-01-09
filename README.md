@@ -27,6 +27,14 @@
 
 项目环境为 Python 3.9. 以下内容可能有助于理解及修改代码.
 
+### 本地运行
+1. Pycharm 下载项目，右键点击src文件夹标记为sources root
+
+![img.png](img.png)
+
+
+安装 `pyinstaller` 后运行 `build.ps1`, 打包文件在 `dist` 目录下
+
 ### 打包
 
 安装 `pyinstaller` 后运行 `build.ps1`, 打包文件在 `dist` 目录下
