@@ -37,6 +37,7 @@
 
 ### 打包
 
+
 安装 `pyinstaller` 后运行 `build.ps1`, 打包文件在 `dist` 目录下
 
 ### 如何添加新配置项
@@ -66,3 +67,10 @@
 * `signals.py` 包括 Qt 信号量, 这是 MC 解耦的关键, 它也负责日志打印
 * `config` 和 `signal` 是预定义的单例, 可以在任何位置导入使用
 * `views` 和 `controllers` 结构相对简单, 可参考上文说明
+
+### FAQ
+m1 mac无法安装pyproj
+
+https://github.com/pyproj4/pyproj/issues/1027
+
+brew install pygobject3 gtk+3
