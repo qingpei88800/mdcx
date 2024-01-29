@@ -1612,7 +1612,8 @@ class MyMAinWindow(QMainWindow):
             file_name = split_path(file_path)[1]
             file_ext = os.path.splitext(file_name)[1]
             try:
-                move_file(file_path, des_path)
+                # move_file(file_path, des_path)
+                shutil.move(file_path, des_path)
                 if file_ext in movie_type:
                     signal.show_log_text('   Move movie: ' + file_name + ' to Movie_moved Success!')
                 else:
@@ -1673,7 +1674,7 @@ class MyMAinWindow(QMainWindow):
         media_folder_path = convert_path(self._get_select_folder_path())
         if media_folder_path and media_folder_path != config.folder:
             config_path = os.path.join(media_folder_path, 'config.ini')
-            with open('MDCx.config', 'w', encoding='UTF-8') as f:
+            with open(config.get_mark_file_path(), 'w', encoding='UTF-8') as f:
                 f.write(config_path)
             if os.path.isfile(config_path):
                 temp_dark = self.dark_mode
@@ -1954,7 +1955,7 @@ class MyMAinWindow(QMainWindow):
             new_config_path = os.path.join(config.folder, new_config_file)
             signal.show_log_text(
                 '\n================================================================================\n切换配置：%s' % new_config_path)
-            with open('MDCx.config', 'w', encoding='UTF-8') as f:
+            with open(config.get_mark_file_path(), 'w', encoding='UTF-8') as f:
                 f.write(new_config_path)
             temp_dark = self.dark_mode
             temp_window_radius = self.window_radius

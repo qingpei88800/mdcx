@@ -13,6 +13,9 @@ from models.config.config_manual import ManualConfig
 
 @singleton
 class MDCxConfig(GeneratedConfig, ManualConfig):
+
+    mark_file_name = 'MDCx.config'
+
     def __init__(self):
         self.file = None
         self.folder = None
@@ -33,6 +36,34 @@ class MDCxConfig(GeneratedConfig, ManualConfig):
     @path.getter
     def path(self):
         return self._path
+    
+    def get_mac_default_config_folder(self):
+        """
+        获取macOS下默认的配置文件夹路径
+
+        ~/.mdcx
+
+        :return: 配置文件夹路径
+        """
+
+        home = os.path.expanduser('~')
+        folder_name = '.mdcx'
+        config_folder = os.path.join(home, folder_name)
+        if not os.path.exists(config_folder):
+            os.makedirs(config_folder, exist_ok=True, mode=0o755)
+        return config_folder
+
+    def get_mark_file_path(self):
+        """
+        获取`记录了配置文件路径`的文件的路径。
+        对于macOS，该文件位于`~/.mdcx/MDCx.config`。
+        其他平台，该文件跟应用程序在同一目录下。
+        """
+
+        if platform.system() == 'Darwin':
+            return os.path.join(self.get_mac_default_config_folder(), self.mark_file_name)
+        else:
+            return self.mark_file_name
 
     def read_config(self):
         self._get_config_path()
@@ -48,10 +79,10 @@ class MDCxConfig(GeneratedConfig, ManualConfig):
                     setattr(self, key, float(value))
                 else:
                     setattr(self, key, value)
-        self._update_config()
+        self.update_config()
 
     def save_config(self):
-        with open('MDCx.config', 'w', encoding='UTF-8') as f:
+        with open(self.get_mark_file_path(), 'w', encoding='UTF-8') as f:
             f.write(self.path)
         with open(self.path, "wt", encoding='UTF-8') as code:
             # 使用反射保存自定义网址设置
@@ -288,7 +319,7 @@ statement = {self.statement}
         with open(self.path, "wt", encoding='UTF-8') as code:
             print(GeneratedConfig.CONFIG_STR, file=code)
 
-    def _update_config(self):
+    def update_config(self):
         # 获取proxies
         if self.type == 'http':
             self.proxies = {
@@ -363,7 +394,7 @@ statement = {self.statement}
 
         # 番号对应官网
         official_websites_dic = {}
-        for key, value in self.official_websites.items():
+        for key, value in self.official.items():
             temp_list = value.upper().split('|')
             for each in temp_list:
                 official_websites_dic[each] = key
@@ -380,10 +411,13 @@ statement = {self.statement}
         self.suffix_sort = new_str
 
     def _get_config_path(self):
-        mdcx_config = 'MDCx.config'  # 此文件用于记录当前配置文件的绝对路径, 从而实现多配置切换
+        mdcx_config = self.get_mark_file_path()  # 此文件用于记录当前配置文件的绝对路径, 从而实现多配置切换
         # 此文件必须存在, 且与 main.py 或打包的可执行文件在同一目录下.
         if not os.path.exists(mdcx_config):  # 不存在时, 创建
-            self.path = os.path.realpath('config.ini')  # 默认配置文件: 同目录下的 config.ini
+            if platform.system() == 'Darwin':
+                self.path = os.path.join(self.get_mac_default_config_folder(), 'config.ini')  # macOS下默认配置文件: ~/.mdcx/config.ini
+            else:
+                self.path = os.path.realpath('config.ini')  # 默认配置文件: 同目录下的 config.ini
             # 设置默认配置文件路径, 若存在则可读取, 否则生成默认配置文件
             with open(mdcx_config, 'w', encoding='UTF-8') as f:
                 f.write(self.path)
